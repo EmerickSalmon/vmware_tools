@@ -7,8 +7,16 @@ from . import logger
 from .configuration import get_vcenter_credentials
 
 def connect_to_vcenter(vcenter_name:str):
-    vcenter_ip, vcenter_user, vcenter_password = get_vcenter_credentials(vcenter_name)
-    # Import the necessary modules
+    vcenter_connestion_parameters = get_vcenter_credentials(vcenter_name)
+    service_instance = connect(*vcenter_connestion_parameters)
+    # Get the content object
+    content = service_instance.RetrieveContent()
+    # Register the disconnect function to be called at exit
+    atexit.register(Disconnect, service_instance)
+    return content
+
+
+def connect(vcenter_ip:str, vcenter_user:str, vcenter_password:str):
     try:
         # Connect to the vCenter server
         service_instance = SmartConnect(
@@ -24,8 +32,4 @@ def connect_to_vcenter(vcenter_name:str):
         logger.error("Error: Unable to connect to vCenter")
         logger.error(e)
         return None
-    # Get the content object
-    content = service_instance.RetrieveContent()
-    # Register the disconnect function to be called at exit
-    atexit.register(Disconnect, service_instance)
-    return content
+    return service_instance

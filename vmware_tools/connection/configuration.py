@@ -1,4 +1,4 @@
-import configparser
+import os
 
 def get_vcenter_credentials(vcenter_name:str) -> tuple[str, str, str]:
     """
@@ -15,9 +15,10 @@ def get_vcenter_credentials(vcenter_name:str) -> tuple[str, str, str]:
     password = admin
 
     """
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    vcenter_ip = config['vcenter']['ip']
-    vcenter_user = config['vcenter']['user']
-    vcenter_password = config['vcenter']['password']
-    return vcenter_ip, vcenter_user, vcenter_password
+    try:
+        vcenter_ip = os.environ["MY_VCENTER_ADDRESS"]
+        vcenter_user = os.environ["MY_VCENTER_USERNAME"]
+        vcenter_password = os.environ["MY_VCENTER_PASSWORD"]
+        return vcenter_ip, vcenter_user, vcenter_password
+    except KeyError as e:
+        raise ValueError(f"Missing environment variable: {e}")
