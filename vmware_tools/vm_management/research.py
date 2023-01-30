@@ -22,7 +22,5 @@ def search_by_dns(vm_dns_name:str, search_in_entity: Union(ClusterComputeResourc
         raise(f"Vm {vm_dns_name} not found")
 
 
-
-
-
-
+def search_vm(vm_name:str) -> VirtualMachine:
+    pass
